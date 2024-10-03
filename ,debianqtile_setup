@@ -1,0 +1,70 @@
+# setup tty font size: sudo dpkg-reconfigure console-setup
+
+if ! (dpkg-query -l | grep -q 'ibus-bamboo'); then
+echo 'add ibus-bamboo repo'
+echo 'deb http://download.opensuse.org/repositories/home:/lamlng/Debian_10/ /' | sudo tee /etc/apt/sources.list.d/home:lamlng.list
+curl -fsSL https://download.opensuse.org/repositories/home:lamlng/Debian_10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_lamlng.gpg > /dev/null
+fi
+
+sudo apt update
+sudo apt upgrade
+
+packages=(
+	xserver-xorg xinit # For qtile
+	libpangocairo-1.0-0 # For qtile
+	python3-pip # For qtile
+	python3-xcffib # For qtileu
+	python3-cairocffi # For qtile
+	pipx # For qtile
+	xfce4-terminal
+	chromium # Web browser
+	thunar # File explorer
+	vim # Powerful terminal-based text editor
+	htop
+	pulseaudio # Sound server
+	volumeicon-alsa # Simple interface to interact with sound server
+	pavucontrol # More complex interface to interact with sound server
+	network-manager-gnome
+	brightnessctl
+	ibus-bamboo # Vietnamese typing
+)
+sudo apt install ${packages[@]}
+
+pipx install qtile
+
+if [ ! -f .Xresources ]; then
+echo 'Xft.dpi: 144' > .Xresources
+fi
+
+if [ ! -f .xinitrc ]; then
+echo 'export GTK_IM_MODULE=xim # đổi thành xim
+export QT_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+# Dành cho những phần mềm dựa trên qt4
+export QT4_IM_MODULE=ibus
+# Dành cho những phần mềm dùng thư viện đồ họa clutter/OpenGL
+export CLUTTER_IM_MODULE=ibus
+export GLFW_IM_MODULE=ibus
+
+xrdb -merge ~/.Xresources
+#TOUCHPAD="DLL0945:00 06CB:76B1 Touchpad" # My dell touchpad (use xinput to get this info)
+TOUCHPAD=`xinput --list | grep "Touchpad" | sed -n "s/.*id=\([0-9]\+\).*/\1/p"`
+xinput --set-prop "$TOUCHPAD" "libinput Tapping Enabled" 1
+xinput --set-prop "$TOUCHPAD" "libinput Accel Speed" 1
+xinput --set-prop "$TOUCHPAD" "libinput Natural Scrolling Enabled" 1
+setxkbmap -option caps:swapescape
+volumeicon &
+nm-applet &
+#picom -f &
+ibus-daemon -drx &
+
+~/.local/bin/qtile start' > .xinitrc
+fi
+
+# sudo reboot, then startx
+
+# Setup network manually to solve the problem network-manager-gnome in qtile bar not displaying available wifies 
+#   Comment lines below "# The primary network interface" in /etc/network/interfaces
+#   Source: https://www.reddit.com/r/debian/comments/14l3uz6/debian_12_kde_wifi_worked_after_minimal/
+#   > Perhaps your wifi device is managed by ifupdown. If that is the case, NetworkManager will ignore it (in its default configuration), since having two programs manage the same network device is problematic. So if that is the case and if you want to use NetworkManager, you should remove your wifi device from ifupdown's configuration.
+#   > Thanks a lot, removing the wifi item from /etc/network/interfaces solved the problem !
