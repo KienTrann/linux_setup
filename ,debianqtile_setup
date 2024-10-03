@@ -2,8 +2,8 @@
 
 if ! (dpkg-query -l | grep -q 'ibus-bamboo'); then
 echo 'add ibus-bamboo repo'
-echo 'deb http://download.opensuse.org/repositories/home:/lamlng/Debian_10/ /' | sudo tee /etc/apt/sources.list.d/home:lamlng.list
-curl -fsSL https://download.opensuse.org/repositories/home:lamlng/Debian_10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_lamlng.gpg > /dev/null
+echo 'deb http://download.opensuse.org/repositories/home:/lamlng/Debian_12/ /' | sudo tee /etc/apt/sources.list.d/home:lamlng.list
+curl -fsSL https://download.opensuse.org/repositories/home:lamlng/Debian_12/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_lamlng.gpg > /dev/null
 fi
 
 sudo apt update
