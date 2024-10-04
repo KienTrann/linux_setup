@@ -13,7 +13,7 @@ packages=(
 	xserver-xorg xinit # For qtile
 	libpangocairo-1.0-0 # For qtile
 	python3-pip # For qtile
-	python3-xcffib # For qtileu
+	python3-xcffib # For qtile
 	python3-cairocffi # For qtile
 	pipx # For qtile
 	xfce4-terminal
@@ -32,11 +32,11 @@ sudo apt install ${packages[@]}
 
 pipx install qtile
 
-if [ ! -f .Xresources ]; then
-echo 'Xft.dpi: 144' > .Xresources
+if [ ! -f ~/.Xresources ]; then
+echo 'Xft.dpi: 144' > ~/.Xresources
 fi
 
-if [ ! -f .xinitrc ]; then
+if [ ! -f ~/.xinitrc ]; then
 echo 'export GTK_IM_MODULE=xim # đổi thành xim
 export QT_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
@@ -58,7 +58,7 @@ nm-applet &
 #picom -f &
 ibus-daemon -drx &
 
-~/.local/bin/qtile start' > .xinitrc
+~/.local/bin/qtile start' > ~/.xinitrc
 fi
 
 # sudo reboot, then startx
