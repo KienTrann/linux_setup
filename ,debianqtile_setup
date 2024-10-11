@@ -36,8 +36,10 @@ if [ ! -f ~/.Xresources ]; then
 echo 'Xft.dpi: 144' > ~/.Xresources
 fi
 
-if [ ! -f ~/.xinitrc ]; then
-echo 'export GTK_IM_MODULE=xim # đổi thành xim
+# Use .xsession instead of .xinitrc for better X server setup
+# Source: https://momi.ca/posts/2021-10-11-startxdebian.html
+if [ ! -f ~/.xsession ]; then
+echo 'export GTK_IM_MODULE=ibus
 export QT_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
 # Dành cho những phần mềm dựa trên qt4
@@ -56,9 +58,9 @@ setxkbmap -option caps:swapescape
 volumeicon &
 nm-applet &
 #picom -f &
-ibus-daemon -drx &
+ibus-daemon -dr &
 
-~/.local/bin/qtile start' > ~/.xinitrc
+~/.local/bin/qtile start' > ~/.xsession
 fi
 
 # sudo reboot, then startx
